@@ -1,0 +1,16 @@
+{
+  "name": "wasm-crt",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "pnpx concurrently \"pnpm:watch\" \"pnpm:serve\"",
+    "watch": "node watch.js",
+    "serve": "pnpx serve -s . -p 3000"
+  },
+  "devDependencies": {
+    "chokidar": "^3.6.0",
+    "concurrently": "^8.2.2",
+    "serve": "^14.2.3",
+    "wabt": "^1.0.38"
+  }
+}

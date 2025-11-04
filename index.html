@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>CRT Terminal</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <meta property="og:image" content="og.png">
+  <meta property="og:title" content="CRT Terminal">
+  <meta property="og:description" content="Yes, it's a CRT.">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+      font-family: monospace;
+      color: #0f0;
+    }
+    canvas {
+      image-rendering: crisp-edges;
+      image-rendering: pixelated;
+      box-shadow: 0 0 50px rgba(0,255,0,0.3);
+      cursor: none;
+      width: 100vw;
+      height: 100vh;
+      object-fit: contain;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    let memory, wasmInstance;
+    let mouseX = 0, mouseY = 0;
+    let lastMouseX = 0, lastMouseY = 0;
+    let mouseVelocity = 0;
+    let degaussKey = false;
+    let spaceKey = false;
+    let smackActive = false;
+    let smackX = 0, smackY = 0;
+    let smackTime = 0;
+    let lastChar = 0;
+    let theme = 0;
+    let magnetEnabled = false;
+
+    canvas.width = 320;
+    canvas.height = 240;
+
+    document.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+
+      const newX = (e.clientX - rect.left) * scaleX;
+      const newY = (e.clientY - rect.top) * scaleY;
+
+      const dx = newX - mouseX;
+      const dy = newY - mouseY;
+      mouseVelocity = Math.sqrt(dx * dx + dy * dy);
+
+      mouseX = newX;
+      mouseY = newY;
+    });
+
+    canvas.addEventListener('click', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      const mx = (e.clientX - rect.left) * scaleX;
+      const my = (e.clientY - rect.top) * scaleY;
+
+      if (wasmInstance) {
+        wasmInstance.exports.handleClick(Math.floor(mx), Math.floor(my));
+      }
+
+      smackX = mx;
+      smackY = my;
+      smackActive = true;
+      smackTime = 0;
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'd' || e.key === 'D') {
+        degaussKey = true;
+        setTimeout(() => { degaussKey = false; }, 100);
+      }
+      if (e.key === 'm' || e.key === 'M') {
+        magnetEnabled = !magnetEnabled;
+      }
+      if (e.key === ' ') {
+        spaceKey = true;
+      }
+      if (e.key >= '1' && e.key <= '5') {
+        theme = parseInt(e.key) - 1;
+        if (wasmInstance) {
+          wasmInstance.exports.resetScanline();
+        }
+      }
+      if (e.key.length === 1 && e.key >= ' ' && e.key <= '~') {
+        lastChar = e.key.charCodeAt(0);
+      }
+      if (e.key === 'Backspace') {
+        lastChar = 8;
+      }
+      if (e.key === 'Enter') {
+        lastChar = 13;
+      }
+    });
+
+    document.addEventListener('keyup', (e) => {
+      if (e.key === ' ') {
+        spaceKey = false;
+      }
+    });
+
+    const imports = {
+      env: {
+        getCanvasWidth: () => canvas.width,
+        getCanvasHeight: () => canvas.height,
+        renderFrame: () => {
+          const ptr = wasmInstance.exports.getPixelBuffer();
+          const pixels = new Uint8ClampedArray(memory.buffer, ptr, canvas.width * canvas.height * 4);
+          const imageData = ctx.createImageData(canvas.width, canvas.height);
+          imageData.data.set(pixels);
+          ctx.putImageData(imageData, 0, 0);
+        },
+        getMouseX: () => Math.floor(mouseX),
+        getMouseY: () => Math.floor(mouseY),
+        getTime: () => Date.now(),
+        getDegaussKey: () => degaussKey ? 1 : 0,
+        getSpaceKey: () => spaceKey ? 1 : 0,
+        getSmackActive: () => smackActive ? 1 : 0,
+        getSmackX: () => smackX,
+        getSmackY: () => smackY,
+        getSmackTime: () => smackTime,
+        getMouseVelocity: () => Math.floor(mouseVelocity),
+        openURL: (ptr, len) => {
+          const bytes = new Uint8Array(memory.buffer, ptr, len);
+          const url = new TextDecoder().decode(bytes);
+          window.open(url, '_blank');
+        },
+        getLastChar: () => lastChar,
+        clearLastChar: () => { lastChar = 0; },
+        getTheme: () => theme,
+        getMagnetEnabled: () => magnetEnabled ? 1 : 0
+      }
+    };
+
+    fetch('crt.wasm')
+      .then(r => r.arrayBuffer())
+      .then(bytes => WebAssembly.instantiate(bytes, imports))
+      .then(({ instance }) => {
+        console.log('WASM loaded');
+        memory = instance.exports.memory;
+        wasmInstance = instance;
+        instance.exports.init();
+
+        let lastFrame = 0;
+        function animate(time) {
+          if (time - lastFrame > 1000) {
+            if (smackActive) {
+              smackTime++;
+              if (smackTime > 30) {
+                smackActive = false;
+              }
+            }
+
+            instance.exports.checkDegauss();
+            instance.exports.render();
+            lastFrame = time;
+
+            mouseVelocity *= 0.9;
+          }
+          requestAnimationFrame(animate);
+        }
+        requestAnimationFrame(animate);
+      })
+      .catch(e => console.error('Error:', e));
+  </script>
+</body>
+</html>

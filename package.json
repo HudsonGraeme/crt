@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "pnpx concurrently \"pnpm:watch\" \"pnpm:serve\"",
     "watch": "node watch.js",
-    "serve": "pnpx serve -s . -p 3000"
+    "serve": "pnpx serve -s . -p 3000",
+    "build": "node build.js"
   },
   "devDependencies": {
     "chokidar": "^3.6.0",

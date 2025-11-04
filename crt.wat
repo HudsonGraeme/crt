@@ -1308,6 +1308,19 @@
     global.get $pixelBufferPtr
   )
 
+  ;; adjust the refresh rate
+  (func (export "setHz") (param $hz i32)
+    local.get $hz
+    i32.const 1280
+    i32.mul
+    global.set $pixelsPerFrame
+
+    local.get $hz
+    i32.const 4
+    i32.mul
+    global.set $linesPerFrame
+  )
+
   ;; sick fx
   (func (export "checkDegauss")
     call $getDegaussKey

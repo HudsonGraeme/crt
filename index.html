@@ -51,6 +51,135 @@
       margin-left: 8px;
       accent-color: #0f0;
     }
+    .port-panel {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #111;
+      border: 2px solid #333;
+      border-radius: 8px;
+      padding: 15px 20px;
+      font-family: monospace;
+      color: #0f0;
+      font-size: 11px;
+      text-shadow: 0 0 5px rgba(0,255,0,0.5);
+      z-index: 10;
+      min-width: 500px;
+    }
+    .ports {
+      display: flex;
+      gap: 30px;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+    .port {
+      text-align: center;
+    }
+    .port-socket {
+      width: 80px;
+      height: 50px;
+      border: 2px dashed #333;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #0a0a0a;
+      margin: 8px auto;
+      position: relative;
+    }
+    .port-socket:hover {
+      border-color: #0f0;
+      box-shadow: 0 0 10px rgba(0,255,0,0.3);
+    }
+    .port-socket.drag-over {
+      border-color: #0ff;
+      background: #001a1a;
+      box-shadow: 0 0 20px rgba(0,255,255,0.5);
+    }
+    .port-socket.connected {
+      border-color: #0f0;
+      border-style: solid;
+      background: #001a00;
+      box-shadow: 0 0 15px rgba(0,255,0,0.4);
+    }
+    .port-label {
+      font-size: 10px;
+      color: #666;
+      margin-bottom: 4px;
+    }
+    .port-status {
+      font-size: 9px;
+      color: #0f0;
+      margin-top: 4px;
+      min-height: 12px;
+    }
+    .port-socket.connected .port-status {
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    .cable-settings {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      align-items: center;
+      padding-top: 12px;
+      border-top: 1px solid #222;
+      font-size: 10px;
+    }
+    .cable-settings label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .cable-settings input[type="range"] {
+      width: 100px;
+    }
+    .drop-hint {
+      color: #444;
+      font-size: 9px;
+    }
+    .connected .drop-hint {
+      display: none;
+    }
+    .eject-btn {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      width: 16px;
+      height: 16px;
+      background: #f00;
+      border-radius: 50%;
+      border: 1px solid #000;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: #000;
+      font-weight: bold;
+    }
+    .connected .eject-btn {
+      display: flex;
+    }
+    .eject-btn:hover {
+      background: #ff3333;
+      box-shadow: 0 0 10px rgba(255,0,0,0.5);
+    }
+    .input-info {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 8px;
+      color: #0f0;
+      white-space: nowrap;
+    }
   </style>
 </head>
 <body>
@@ -61,6 +190,41 @@
       <input type="range" id="hz-slider" min="1" max="60" value="60" step="1">
     </label>
   </div>
+
+  <div class="port-panel">
+    <div class="ports">
+      <div class="port">
+        <div class="port-label">VGA INPUT</div>
+        <div class="port-socket" data-port="vga">
+          <div class="drop-hint">DROP</div>
+          <div class="input-info"></div>
+          <div class="eject-btn">×</div>
+        </div>
+        <div class="port-status"></div>
+      </div>
+      <div class="port">
+        <div class="port-label">DVI INPUT</div>
+        <div class="port-socket" data-port="dvi">
+          <div class="drop-hint">DROP</div>
+          <div class="input-info"></div>
+          <div class="eject-btn">×</div>
+        </div>
+        <div class="port-status"></div>
+      </div>
+    </div>
+    <div class="cable-settings">
+      <label>
+        Quality: <span id="quality-value">100</span>%
+        <input type="range" id="quality-slider" min="0" max="100" value="100" step="5">
+      </label>
+      <label>
+        Length: <span id="length-value">6</span>ft
+        <input type="range" id="length-slider" min="3" max="50" value="6" step="1">
+      </label>
+    </div>
+  </div>
+
+  <input type="file" id="file-input" accept="image/*,video/*" style="display: none;">
 
   <script>
     const canvas = document.getElementById('canvas');
@@ -78,6 +242,17 @@
     let lastChar = 0;
     let theme = 0;
     let magnetEnabled = false;
+
+    let inputSource = null;
+    let inputType = null;
+    let activePort = null;
+    let cableQuality = 1.0;
+    let cableLength = 6;
+    let signalPresent = false;
+    let inputCanvas = document.createElement('canvas');
+    let inputCtx = inputCanvas.getContext('2d');
+    inputCanvas.width = 320;
+    inputCanvas.height = 240;
 
     canvas.width = 320;
     canvas.height = 240;
@@ -149,6 +324,137 @@
       }
     });
 
+    function connectInput(port, source, type) {
+      disconnectInput();
+      activePort = port;
+      inputSource = source;
+      inputType = type;
+      signalPresent = true;
+
+      const socket = document.querySelector(`[data-port="${port}"]`);
+      socket.classList.add('connected');
+
+      const status = socket.parentElement.querySelector('.port-status');
+      const info = socket.querySelector('.input-info');
+
+      if (type === 'image') {
+        status.textContent = `${source.width}x${source.height}`;
+        info.textContent = 'IMG';
+      } else if (type === 'video') {
+        status.textContent = `${source.videoWidth}x${source.videoHeight}`;
+        info.textContent = 'VID';
+      }
+
+      if (wasmInstance) {
+        wasmInstance.exports.resetScanline();
+      }
+    }
+
+    function disconnectInput() {
+      if (activePort) {
+        const socket = document.querySelector(`[data-port="${activePort}"]`);
+        socket.classList.remove('connected');
+        socket.parentElement.querySelector('.port-status').textContent = '';
+        socket.querySelector('.input-info').textContent = '';
+      }
+
+      if (inputSource && inputType === 'video') {
+        inputSource.pause();
+      }
+
+      inputSource = null;
+      inputType = null;
+      activePort = null;
+      signalPresent = false;
+
+      if (wasmInstance) {
+        wasmInstance.exports.resetScanline();
+      }
+    }
+
+    function handleFileDrop(port, file) {
+      if (file.type.startsWith('image/')) {
+        const img = new Image();
+        img.onload = () => {
+          connectInput(port, img, 'image');
+        };
+        img.src = URL.createObjectURL(file);
+      } else if (file.type.startsWith('video/')) {
+        const video = document.createElement('video');
+        video.loop = true;
+        video.muted = true;
+        video.onloadedmetadata = () => {
+          video.play();
+          connectInput(port, video, 'video');
+        };
+        video.src = URL.createObjectURL(file);
+      }
+    }
+
+    document.querySelectorAll('.port-socket').forEach(socket => {
+      const port = socket.dataset.port;
+
+      socket.addEventListener('click', () => {
+        if (socket.classList.contains('connected')) return;
+        const fileInput = document.getElementById('file-input');
+        fileInput.onchange = (e) => {
+          if (e.target.files[0]) {
+            handleFileDrop(port, e.target.files[0]);
+          }
+        };
+        fileInput.click();
+      });
+
+      socket.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        socket.classList.add('drag-over');
+      });
+
+      socket.addEventListener('dragleave', () => {
+        socket.classList.remove('drag-over');
+      });
+
+      socket.addEventListener('drop', (e) => {
+        e.preventDefault();
+        socket.classList.remove('drag-over');
+
+        if (e.dataTransfer.files[0]) {
+          handleFileDrop(port, e.dataTransfer.files[0]);
+        }
+      });
+
+      const ejectBtn = socket.querySelector('.eject-btn');
+      ejectBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        disconnectInput();
+      });
+    });
+
+    document.getElementById('quality-slider').addEventListener('input', (e) => {
+      cableQuality = parseInt(e.target.value) / 100;
+      document.getElementById('quality-value').textContent = e.target.value;
+    });
+
+    document.getElementById('length-slider').addEventListener('input', (e) => {
+      cableLength = parseInt(e.target.value);
+      document.getElementById('length-value').textContent = e.target.value;
+    });
+
+    function updateExternalFramebuffer() {
+      if (!signalPresent || !inputSource || !wasmInstance) return;
+
+      try {
+        inputCtx.drawImage(inputSource, 0, 0, inputCanvas.width, inputCanvas.height);
+        const imageData = inputCtx.getImageData(0, 0, inputCanvas.width, inputCanvas.height);
+
+        const ptr = wasmInstance.exports.getExternalFramebuffer();
+        const externalBuffer = new Uint8ClampedArray(memory.buffer, ptr, inputCanvas.width * inputCanvas.height * 4);
+        externalBuffer.set(imageData.data);
+      } catch (e) {
+        console.error('External framebuffer update failed:', e);
+      }
+    }
+
     const imports = {
       env: {
         getCanvasWidth: () => canvas.width,
@@ -178,7 +484,15 @@
         getLastChar: () => lastChar,
         clearLastChar: () => { lastChar = 0; },
         getTheme: () => theme,
-        getMagnetEnabled: () => magnetEnabled ? 1 : 0
+        getMagnetEnabled: () => magnetEnabled ? 1 : 0,
+        getSignalPresent: () => signalPresent ? 1 : 0,
+        getCableQuality: () => Math.floor(cableQuality * 100),
+        getCableLength: () => cableLength,
+        getActivePort: () => {
+          if (activePort === 'vga') return 1;
+          if (activePort === 'dvi') return 2;
+          return 0;
+        }
       }
     };
 
@@ -201,6 +515,7 @@
               }
             }
 
+            updateExternalFramebuffer();
             instance.exports.checkDegauss();
             instance.exports.render();
             lastFrame = time;

@@ -20,13 +20,13 @@
       align-items: center;
       min-height: 100vh;
       overflow: hidden;
-      font-family: monospace;
-      color: #0f0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+      color: #fff;
     }
     canvas {
       image-rendering: crisp-edges;
       image-rendering: pixelated;
-      box-shadow: 0 0 50px rgba(0,255,0,0.3);
+      box-shadow: 0 0 80px rgba(0, 0, 0, 0.8);
       cursor: none;
       width: 100vw;
       height: 100vh;
@@ -34,38 +34,67 @@
     }
     .controls {
       position: fixed;
-      top: 20px;
-      right: 20px;
-      font-family: monospace;
-      color: #0f0;
-      font-size: 12px;
-      text-shadow: 0 0 5px rgba(0,255,0,0.5);
-      opacity: 0.7;
+      top: 24px;
+      right: 24px;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: -0.2px;
       z-index: 10;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(40px) saturate(180%);
+      padding: 16px 20px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .controls:hover {
-      opacity: 1;
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.18);
+      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4);
     }
     input[type="range"] {
-      width: 120px;
-      margin-left: 8px;
-      accent-color: #0f0;
+      width: 140px;
+      margin-left: 12px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 2px;
+      outline: none;
+      -webkit-appearance: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      background: #fff;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      transition: all 0.2s;
+    }
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     }
     .port-panel {
       position: fixed;
-      bottom: 20px;
+      bottom: 24px;
       left: 50%;
       transform: translateX(-50%);
-      background: #111;
-      border: 2px solid #333;
-      border-radius: 8px;
-      padding: 15px 20px;
-      font-family: monospace;
-      color: #0f0;
-      font-size: 11px;
-      text-shadow: 0 0 5px rgba(0,255,0,0.5);
+      background: rgba(20, 20, 20, 0.85);
+      backdrop-filter: blur(40px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 20px;
+      padding: 24px 32px;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+      color: rgba(255, 255, 255, 0.95);
+      font-size: 12px;
+      font-weight: 500;
       z-index: 10;
-      min-width: 500px;
+      min-width: 600px;
+      box-shadow: 0 16px 64px rgba(0, 0, 0, 0.5);
     }
     .ports {
       display: flex;
@@ -77,51 +106,57 @@
       text-align: center;
     }
     .port-socket {
-      width: 80px;
-      height: 50px;
-      border: 2px dashed #333;
-      border-radius: 6px;
+      width: 90px;
+      height: 56px;
+      border: 2px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: all 0.2s;
-      background: #0a0a0a;
-      margin: 8px auto;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      background: rgba(255, 255, 255, 0.03);
+      margin: 10px auto;
       position: relative;
+      backdrop-filter: blur(10px);
     }
     .port-socket:hover {
-      border-color: #0f0;
-      box-shadow: 0 0 10px rgba(0,255,0,0.3);
+      border-color: rgba(255, 255, 255, 0.35);
+      background: rgba(255, 255, 255, 0.08);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
     }
     .port-socket.drag-over {
-      border-color: #0ff;
-      background: #001a1a;
-      box-shadow: 0 0 20px rgba(0,255,255,0.5);
+      border-color: rgba(100, 200, 255, 0.8);
+      background: rgba(100, 200, 255, 0.1);
+      box-shadow: 0 8px 24px rgba(100, 200, 255, 0.3);
     }
     .port-socket.connected {
-      border-color: #0f0;
-      border-style: solid;
-      background: #001a00;
-      box-shadow: 0 0 15px rgba(0,255,0,0.4);
+      border-color: rgba(52, 199, 89, 0.8);
+      background: rgba(52, 199, 89, 0.12);
+      box-shadow: 0 4px 16px rgba(52, 199, 89, 0.3);
     }
     .port-label {
       font-size: 10px;
-      color: #666;
-      margin-bottom: 4px;
+      color: rgba(255, 255, 255, 0.5);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      font-weight: 600;
     }
     .port-status {
-      font-size: 9px;
-      color: #0f0;
-      margin-top: 4px;
-      min-height: 12px;
+      font-size: 10px;
+      color: rgba(52, 199, 89, 0.9);
+      margin-top: 6px;
+      min-height: 14px;
+      font-weight: 500;
     }
     .port-socket.connected .port-status {
       animation: pulse 2s infinite;
     }
     @keyframes pulse {
       0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
+      50% { opacity: 0.7; }
     }
     .cable-plug {
       display: flex;
@@ -283,165 +318,257 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.9);
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(20px);
       z-index: 1000;
       align-items: center;
       justify-content: center;
     }
     .modal.active {
       display: flex;
+      animation: fadeIn 0.2s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
     .modal-content {
-      background: #0a0a0a;
-      border: 2px solid #0f0;
-      border-radius: 8px;
-      padding: 24px;
-      max-width: 500px;
+      background: rgba(28, 28, 30, 0.95);
+      backdrop-filter: blur(40px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 24px;
+      padding: 36px;
+      max-width: 480px;
       width: 90%;
-      color: #0f0;
-      font-family: monospace;
-      box-shadow: 0 0 40px rgba(0, 255, 0, 0.5);
+      color: rgba(255, 255, 255, 0.95);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+      box-shadow: 0 32px 96px rgba(0, 0, 0, 0.7), 0 0 0 0.5px rgba(255, 255, 255, 0.1) inset;
+      animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    .modal-content::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    }
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
     .modal-header {
-      font-size: 16px;
-      margin-bottom: 16px;
+      font-size: 20px;
+      margin-bottom: 24px;
       text-align: center;
-      text-transform: uppercase;
-      letter-spacing: 2px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
     }
     .input-options {
       display: flex;
       flex-direction: column;
       gap: 12px;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
     }
     .input-option {
-      padding: 12px 16px;
-      background: #0a0a0a;
-      border: 2px solid #333;
-      border-radius: 4px;
+      padding: 18px 22px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1.5px solid rgba(255, 255, 255, 0.12);
+      border-radius: 14px;
       cursor: pointer;
-      transition: all 0.2s;
-      text-align: center;
-      font-size: 14px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      text-align: left;
+      position: relative;
+      overflow: hidden;
+    }
+    .input-option::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+    .input-option:hover::before {
+      opacity: 1;
     }
     .input-option:hover {
-      border-color: #0f0;
-      background: #001a00;
-      box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+      border-color: rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.1);
+      transform: scale(1.02);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
     }
     .input-option.selected {
-      border-color: #0f0;
-      background: #001a00;
-      box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+      border-color: rgba(52, 199, 89, 0.6);
+      background: linear-gradient(135deg, rgba(52, 199, 89, 0.18), rgba(48, 209, 88, 0.12));
+      box-shadow: 0 4px 20px rgba(52, 199, 89, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+    .input-option.selected::after {
+      content: '✓';
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 18px;
+      color: #34c759;
+      font-weight: 700;
+    }
+    .input-option > div {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+      margin-bottom: 4px;
+      position: relative;
+      z-index: 1;
+    }
+    .input-option small {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.5);
+      font-weight: 400;
+      position: relative;
+      z-index: 1;
     }
     .rtsp-input {
       display: none;
-      margin-top: 12px;
+      margin-top: 16px;
     }
     .rtsp-input.active {
       display: block;
     }
     .rtsp-input input {
       width: 100%;
-      padding: 8px;
-      background: #000;
-      border: 1px solid #0f0;
-      color: #0f0;
-      font-family: monospace;
-      font-size: 12px;
-      border-radius: 4px;
-      margin-top: 8px;
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1.5px solid rgba(255, 255, 255, 0.15);
+      color: rgba(255, 255, 255, 0.9);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Mono", monospace;
+      font-size: 13px;
+      border-radius: 10px;
+      margin-top: 10px;
+      outline: none;
+      transition: all 0.3s;
+    }
+    .rtsp-input input:focus {
+      border-color: rgba(52, 199, 89, 0.6);
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 0 4px rgba(52, 199, 89, 0.1);
     }
     .rtsp-input label {
-      font-size: 11px;
-      color: #0f0;
-      opacity: 0.7;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 500;
     }
     .modal-buttons {
       display: flex;
       gap: 12px;
       justify-content: flex-end;
-      margin-top: 20px;
+      margin-top: 28px;
     }
     .modal-btn {
-      padding: 8px 16px;
-      background: #0a0a0a;
-      border: 1px solid #0f0;
-      color: #0f0;
-      font-family: monospace;
-      font-size: 12px;
+      padding: 11px 24px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1.5px solid rgba(255, 255, 255, 0.15);
+      color: rgba(255, 255, 255, 0.9);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+      font-size: 14px;
+      font-weight: 600;
       cursor: pointer;
-      border-radius: 4px;
-      transition: all 0.2s;
+      border-radius: 10px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      letter-spacing: -0.2px;
     }
     .modal-btn:hover {
-      background: #001a00;
-      box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.25);
+      transform: translateY(-1px);
     }
     .modal-btn.primary {
-      background: #0f0;
-      color: #000;
+      background: linear-gradient(135deg, #34c759, #30d158);
+      color: #fff;
+      border-color: transparent;
+      box-shadow: 0 4px 12px rgba(52, 199, 89, 0.3);
     }
     .modal-btn.primary:hover {
-      box-shadow: 0 0 15px rgba(0, 255, 0, 0.7);
+      box-shadow: 0 6px 20px rgba(52, 199, 89, 0.4);
+      transform: translateY(-2px);
     }
     .cable-settings {
       display: flex;
-      gap: 20px;
+      gap: 28px;
       justify-content: center;
       align-items: center;
-      padding-top: 12px;
-      border-top: 1px solid #222;
-      font-size: 10px;
+      padding-top: 16px;
+      margin-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 11px;
     }
     .cable-settings label {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 500;
     }
     .cable-settings input[type="range"] {
-      width: 100px;
+      width: 120px;
     }
     .drop-hint {
-      color: #444;
-      font-size: 9px;
+      color: rgba(255, 255, 255, 0.25);
+      font-size: 10px;
+      font-weight: 500;
     }
     .connected .drop-hint {
       display: none;
     }
     .eject-btn {
       position: absolute;
-      top: -8px;
-      right: -8px;
-      width: 16px;
-      height: 16px;
-      background: #f00;
+      top: -10px;
+      right: -10px;
+      width: 20px;
+      height: 20px;
+      background: linear-gradient(135deg, #ff3b30, #ff453a);
       border-radius: 50%;
-      border: 1px solid #000;
+      border: 2px solid rgba(20, 20, 20, 0.9);
       cursor: pointer;
       display: none;
       align-items: center;
       justify-content: center;
-      font-size: 10px;
-      color: #000;
-      font-weight: bold;
+      font-size: 12px;
+      color: #fff;
+      font-weight: 600;
+      transition: all 0.2s;
+      box-shadow: 0 2px 8px rgba(255, 59, 48, 0.4);
     }
     .connected .eject-btn {
       display: flex;
     }
     .eject-btn:hover {
-      background: #ff3333;
-      box-shadow: 0 0 10px rgba(255,0,0,0.5);
+      transform: scale(1.1);
+      box-shadow: 0 4px 12px rgba(255, 59, 48, 0.6);
     }
     .input-info {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      font-size: 8px;
-      color: #0f0;
+      font-size: 9px;
+      color: rgba(52, 199, 89, 0.9);
       white-space: nowrap;
+      font-weight: 600;
+      letter-spacing: 0.5px;
     }
   </style>
 </head>

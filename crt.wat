@@ -21,6 +21,24 @@
   (import "env" "getCableQuality" (func $getCableQuality (result i32)))
   (import "env" "getCableLength" (func $getCableLength (result i32)))
   (import "env" "getActivePort" (func $getActivePort (result i32)))
+  (import "env" "getYCableConnected" (func $getYCableConnected (result i32)))
+  (import "env" "getPbCableConnected" (func $getPbCableConnected (result i32)))
+  (import "env" "getPrCableConnected" (func $getPrCableConnected (result i32)))
+  (import "env" "getYCableQuality" (func $getYCableQuality (result i32)))
+  (import "env" "getPbCableQuality" (func $getPbCableQuality (result i32)))
+  (import "env" "getPrCableQuality" (func $getPrCableQuality (result i32)))
+  (import "env" "getVgaPinRed" (func $getVgaPinRed (result i32)))
+  (import "env" "getVgaPinGreen" (func $getVgaPinGreen (result i32)))
+  (import "env" "getVgaPinBlue" (func $getVgaPinBlue (result i32)))
+  (import "env" "getVgaPinHsync" (func $getVgaPinHsync (result i32)))
+  (import "env" "getVgaPinVsync" (func $getVgaPinVsync (result i32)))
+  (import "env" "getVgaPinRedGnd" (func $getVgaPinRedGnd (result i32)))
+  (import "env" "getVgaPinGreenGnd" (func $getVgaPinGreenGnd (result i32)))
+  (import "env" "getVgaPinBlueGnd" (func $getVgaPinBlueGnd (result i32)))
+  (import "env" "getDviTmdsData0" (func $getDviTmdsData0 (result i32)))
+  (import "env" "getDviTmdsData1" (func $getDviTmdsData1 (result i32)))
+  (import "env" "getDviTmdsData2" (func $getDviTmdsData2 (result i32)))
+  (import "env" "getDviTmdsClock" (func $getDviTmdsClock (result i32)))
 
   (memory (export "memory") 800)
 
@@ -1487,6 +1505,10 @@
     (local $my i32)
     (local $char i32)
     (local $temp i32)
+    (local $Y i32)
+    (local $Pb i32)
+    (local $Pr i32)
+    (local $noise i32)
 
     global.get $frameCount
     i32.const 1
@@ -1781,6 +1803,168 @@
           i32.const 1
           i32.eq
           if
+            call $getVgaPinRed
+            i32.eqz
+            if
+              i32.const 0
+              local.set $r
+            else
+              call $getVgaPinRedGnd
+              i32.eqz
+              if
+                local.get $pixelIndex
+                i32.const 11
+                i32.mul
+                global.get $frameCount
+                i32.add
+                i32.const 255
+                i32.rem_u
+                i32.const 30
+                i32.div_u
+                local.get $r
+                i32.add
+                i32.const 0
+                call $max
+                i32.const 255
+                call $min
+                local.set $r
+              end
+            end
+
+            call $getVgaPinGreen
+            i32.eqz
+            if
+              i32.const 0
+              local.set $g
+            else
+              call $getVgaPinGreenGnd
+              i32.eqz
+              if
+                local.get $pixelIndex
+                i32.const 13
+                i32.mul
+                global.get $frameCount
+                i32.add
+                i32.const 255
+                i32.rem_u
+                i32.const 30
+                i32.div_u
+                local.get $g
+                i32.add
+                i32.const 0
+                call $max
+                i32.const 255
+                call $min
+                local.set $g
+              end
+            end
+
+            call $getVgaPinBlue
+            i32.eqz
+            if
+              i32.const 0
+              local.set $b
+            else
+              call $getVgaPinBlueGnd
+              i32.eqz
+              if
+                local.get $pixelIndex
+                i32.const 17
+                i32.mul
+                global.get $frameCount
+                i32.add
+                i32.const 255
+                i32.rem_u
+                i32.const 30
+                i32.div_u
+                local.get $b
+                i32.add
+                i32.const 0
+                call $max
+                i32.const 255
+                call $min
+                local.set $b
+              end
+            end
+
+            call $getVgaPinVsync
+            i32.eqz
+            if
+              local.get $y
+              global.get $frameCount
+              i32.const 2
+              i32.rem_u
+              i32.const 10
+              i32.mul
+              i32.add
+              i32.const 240
+              i32.rem_u
+              local.set $y
+            end
+
+            call $getVgaPinHsync
+            i32.eqz
+            if
+              local.get $x
+              global.get $frameCount
+              i32.const 3
+              i32.rem_u
+              i32.const 5
+              i32.mul
+              i32.add
+              i32.const 320
+              i32.rem_u
+              local.set $x
+            end
+
+            call $getVgaPinRedGnd
+            i32.eqz
+            call $getVgaPinGreenGnd
+            i32.eqz
+            i32.and
+            if
+              local.get $pixelIndex
+              i32.const 3
+              i32.rem_u
+              i32.const 0
+              i32.eq
+              if
+                local.get $r
+                local.get $g
+                i32.add
+                i32.const 2
+                i32.div_u
+                local.set $temp
+                local.get $temp
+                local.set $r
+                local.get $temp
+                local.set $g
+              end
+            end
+
+            call $getVgaPinRed
+            call $getVgaPinGreen
+            call $getVgaPinBlue
+            i32.add
+            i32.add
+            i32.const 3
+            i32.lt_u
+            if
+              global.get $frameCount
+              i32.const 8
+              i32.rem_u
+              i32.const 0
+              i32.eq
+              if
+                i32.const 0
+                local.set $r
+                i32.const 0
+                local.set $g
+                i32.const 0
+                local.set $b
+              end
+            end
+
             local.get $y
             i32.const 3
             i32.rem_u
@@ -1817,6 +2001,315 @@
                 local.set $b
               end
             end
+          end
+
+          call $getActivePort
+          i32.const 2
+          i32.eq
+          if
+            call $getDviTmdsClock
+            i32.eqz
+            if
+              i32.const 0
+              local.set $r
+              i32.const 0
+              local.set $g
+              i32.const 0
+              local.set $b
+            else
+              call $getDviTmdsData2
+              i32.eqz
+              if
+                i32.const 0
+                local.set $r
+                local.get $pixelIndex
+                i32.const 8
+                i32.rem_u
+                i32.const 0
+                i32.eq
+                if
+                  local.get $g
+                  i32.const 200
+                  i32.add
+                  i32.const 255
+                  call $min
+                  local.set $g
+                  local.get $b
+                  i32.const 50
+                  i32.add
+                  i32.const 255
+                  call $min
+                  local.set $b
+                end
+              end
+
+              call $getDviTmdsData1
+              i32.eqz
+              if
+                i32.const 0
+                local.set $g
+                local.get $pixelIndex
+                i32.const 8
+                i32.rem_u
+                i32.const 4
+                i32.eq
+                if
+                  local.get $r
+                  i32.const 150
+                  i32.add
+                  i32.const 255
+                  call $min
+                  local.set $r
+                  local.get $b
+                  i32.const 150
+                  i32.add
+                  i32.const 255
+                  call $min
+                  local.set $b
+                end
+              end
+
+              call $getDviTmdsData0
+              i32.eqz
+              if
+                i32.const 0
+                local.set $b
+                local.get $pixelIndex
+                i32.const 16
+                i32.rem_u
+                i32.const 0
+                i32.eq
+                if
+                  local.get $r
+                  i32.const 100
+                  i32.add
+                  i32.const 255
+                  call $min
+                  local.set $r
+                  local.get $g
+                  i32.const 100
+                  i32.add
+                  i32.const 255
+                  call $min
+                  local.set $g
+                end
+              end
+            end
+          end
+
+          call $getActivePort
+          i32.const 3
+          i32.eq
+          if
+            local.get $r
+            i32.const 299
+            i32.mul
+            local.get $g
+            i32.const 587
+            i32.mul
+            i32.add
+            local.get $b
+            i32.const 114
+            i32.mul
+            i32.add
+            i32.const 1000
+            i32.div_s
+            local.set $Y
+
+            local.get $b
+            i32.const 500
+            i32.mul
+            local.get $r
+            i32.const 168
+            i32.mul
+            i32.sub
+            local.get $g
+            i32.const 331
+            i32.mul
+            i32.sub
+            i32.const 1000
+            i32.div_s
+            i32.const 128
+            i32.add
+            local.set $Pb
+
+            local.get $r
+            i32.const 500
+            i32.mul
+            local.get $g
+            i32.const 418
+            i32.mul
+            i32.sub
+            local.get $b
+            i32.const 81
+            i32.mul
+            i32.sub
+            i32.const 1000
+            i32.div_s
+            i32.const 128
+            i32.add
+            local.set $Pr
+
+            call $getYCableConnected
+            i32.eqz
+            if
+              i32.const 0
+              local.set $Y
+            else
+              call $getYCableQuality
+              i32.const 90
+              i32.lt_u
+              if
+                local.get $pixelIndex
+                i32.const 13
+                i32.mul
+                global.get $frameCount
+                i32.add
+                i32.const 255
+                i32.rem_u
+                i32.const 100
+                call $getYCableQuality
+                i32.sub
+                i32.mul
+                i32.const 100
+                i32.div_u
+                local.set $noise
+
+                local.get $Y
+                local.get $noise
+                i32.add
+                i32.const 0
+                call $max
+                i32.const 255
+                call $min
+                local.set $Y
+              end
+            end
+
+            call $getPbCableConnected
+            i32.eqz
+            if
+              i32.const 128
+              local.set $Pb
+            else
+              call $getPbCableQuality
+              i32.const 90
+              i32.lt_u
+              if
+                local.get $pixelIndex
+                i32.const 19
+                i32.mul
+                global.get $frameCount
+                i32.add
+                i32.const 255
+                i32.rem_u
+                i32.const 100
+                call $getPbCableQuality
+                i32.sub
+                i32.mul
+                i32.const 100
+                i32.div_u
+                local.set $noise
+
+                local.get $Pb
+                local.get $noise
+                i32.add
+                i32.const 0
+                call $max
+                i32.const 255
+                call $min
+                local.set $Pb
+              end
+            end
+
+            call $getPrCableConnected
+            i32.eqz
+            if
+              i32.const 128
+              local.set $Pr
+            else
+              call $getPrCableQuality
+              i32.const 90
+              i32.lt_u
+              if
+                local.get $pixelIndex
+                i32.const 23
+                i32.mul
+                global.get $frameCount
+                i32.add
+                i32.const 255
+                i32.rem_u
+                i32.const 100
+                call $getPrCableQuality
+                i32.sub
+                i32.mul
+                i32.const 100
+                i32.div_u
+                local.set $noise
+
+                local.get $Pr
+                local.get $noise
+                i32.add
+                i32.const 0
+                call $max
+                i32.const 255
+                call $min
+                local.set $Pr
+              end
+            end
+
+            local.get $Y
+            local.get $Pr
+            i32.const 128
+            i32.sub
+            i32.const 1402
+            i32.mul
+            i32.const 1000
+            i32.div_s
+            i32.add
+            i32.const 0
+            call $max
+            i32.const 255
+            call $min
+            local.set $r
+
+            local.get $Y
+            local.get $Pb
+            i32.const 128
+            i32.sub
+            i32.const 344
+            i32.mul
+            i32.const 1000
+            i32.div_s
+            i32.sub
+            local.get $Pr
+            i32.const 128
+            i32.sub
+            i32.const 714
+            i32.mul
+            i32.const 1000
+            i32.div_s
+            i32.sub
+            i32.const 0
+            call $max
+            i32.const 255
+            call $min
+            local.set $g
+
+            local.get $Y
+            local.get $Pb
+            i32.const 128
+            i32.sub
+            i32.const 1772
+            i32.mul
+            i32.const 1000
+            i32.div_s
+            i32.add
+            i32.const 0
+            call $max
+            i32.const 255
+            call $min
+            local.set $b
           end
 
           local.get $pixelIndex
@@ -1901,16 +2394,19 @@
       call $drawText
     end
 
-    i32.const 4096
-    i32.const 13
-    i32.const 20
-    i32.const 20
-    i32.const 2
-    call $drawText
+    call $getSignalPresent
+    i32.eqz
+    if
+      i32.const 4096
+      i32.const 13
+      i32.const 20
+      i32.const 20
+      i32.const 2
+      call $drawText
 
-    i32.const 110
-    i32.const 36
-    call $drawCoffeeCup
+      i32.const 110
+      i32.const 36
+      call $drawCoffeeCup
 
     global.get $clickedLink
     i32.const 1
@@ -2043,49 +2539,50 @@
       global.set $cursorIsPointer
     end
 
-    i32.const 7050
-    i32.const 1
-    i32.const 5
-    i32.const 225
-    i32.const 1
-    call $drawText
-
-    global.get $inputBufferPtr
-    global.get $inputLen
-    i32.const 13
-    i32.const 225
-    i32.const 1
-    call $drawText
-
-    global.get $frameCount
-    i32.const 30
-    i32.rem_u
-    i32.const 15
-    i32.lt_u
-    if
-      i32.const 7052
+      i32.const 7050
       i32.const 1
-      i32.const 13
-      global.get $inputLen
-      i32.const 8
-      i32.mul
-      i32.add
+      i32.const 5
       i32.const 225
       i32.const 1
       call $drawText
+
+      global.get $inputBufferPtr
+      global.get $inputLen
+      i32.const 13
+      i32.const 225
+      i32.const 1
+      call $drawText
+
+      global.get $frameCount
+      i32.const 30
+      i32.rem_u
+      i32.const 15
+      i32.lt_u
+      if
+        i32.const 7052
+        i32.const 1
+        i32.const 13
+        global.get $inputLen
+        i32.const 8
+        i32.mul
+        i32.add
+        i32.const 225
+        i32.const 1
+        call $drawText
+      end
+
+      global.get $beamX
+      global.get $beamY
+      i32.const 240
+      i32.const 255
+      i32.const 255
+      i32.const 200
+      call $putPixel
+
+      local.get $mx
+      local.get $my
+      call $drawCursor
     end
-
-    global.get $beamX
-    global.get $beamY
-    i32.const 240
-    i32.const 255
-    i32.const 255
-    i32.const 200
-    call $putPixel
-
-    local.get $mx
-    local.get $my
-    call $drawCursor
 
     call $getLastChar
     local.set $char

@@ -123,6 +123,269 @@
       0%, 100% { opacity: 1; }
       50% { opacity: 0.5; }
     }
+    .cable-plug {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 9px;
+      padding: 3px 6px;
+      background: #0a0a0a;
+      border-radius: 3px;
+      border: 1px solid #333;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .cable-plug:hover {
+      border-color: #0f0;
+    }
+    .cable-plug.disconnected {
+      opacity: 0.4;
+      border-style: dashed;
+    }
+    .cable-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      border: 1px solid #333;
+    }
+    .cable-plug.y-cable .cable-indicator {
+      background: #0f0;
+    }
+    .cable-plug.pb-cable .cable-indicator {
+      background: #00f;
+    }
+    .cable-plug.pr-cable .cable-indicator {
+      background: #f00;
+    }
+    .cable-plug.disconnected .cable-indicator {
+      background: #222;
+    }
+    .cable-quality {
+      width: 60px;
+      height: 3px;
+      background: #222;
+      border-radius: 2px;
+      margin-left: auto;
+    }
+    .cable-quality-fill {
+      height: 100%;
+      background: #0f0;
+      border-radius: 2px;
+      transition: width 0.3s;
+    }
+    .pin-connector {
+      display: none;
+      margin-top: 8px;
+      padding: 8px;
+      background: #0a0a0a;
+      border: 1px solid #333;
+      border-radius: 4px;
+    }
+    .port:has(.port-socket.connected) .pin-connector {
+      display: block;
+    }
+    .component-cables {
+      display: none;
+      margin-top: 8px;
+      gap: 4px;
+      flex-direction: column;
+    }
+    .port:has(.port-socket.connected) .component-cables {
+      display: flex;
+    }
+    .vga-pins {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      align-items: center;
+    }
+    .vga-row {
+      display: flex;
+      gap: 3px;
+    }
+    .vga-row:nth-child(2) {
+      margin-left: 6px;
+    }
+    .pin {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      border: 1px solid #333;
+      background: #444;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .pin:hover::after {
+      content: attr(data-label);
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #000;
+      color: #0f0;
+      padding: 2px 4px;
+      border-radius: 2px;
+      font-size: 7px;
+      white-space: nowrap;
+      margin-bottom: 2px;
+      border: 1px solid #0f0;
+      z-index: 100;
+    }
+    .pin.connected {
+      background: #0f0;
+      box-shadow: 0 0 4px #0f0;
+    }
+    .pin.red { border-color: #f00; }
+    .pin.red.connected { background: #f00; box-shadow: 0 0 4px #f00; }
+    .pin.green { border-color: #0f0; }
+    .pin.blue { border-color: #00f; }
+    .pin.blue.connected { background: #00f; box-shadow: 0 0 4px #00f; }
+    .pin.sync { border-color: #ff0; }
+    .pin.sync.connected { background: #ff0; box-shadow: 0 0 4px #ff0; }
+    .dvi-pins {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .tmds-lane {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 7px;
+      padding: 2px 4px;
+      background: #0a0a0a;
+      border-radius: 2px;
+      border: 1px solid #333;
+    }
+    .tmds-indicator {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      border: 1px solid #333;
+      background: #222;
+    }
+    .tmds-lane.active .tmds-indicator {
+      background: #0f0;
+      box-shadow: 0 0 4px #0f0;
+    }
+    .tmds-lane {
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tmds-lane:hover {
+      border-color: #0f0;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal.active {
+      display: flex;
+    }
+    .modal-content {
+      background: #0a0a0a;
+      border: 2px solid #0f0;
+      border-radius: 8px;
+      padding: 24px;
+      max-width: 500px;
+      width: 90%;
+      color: #0f0;
+      font-family: monospace;
+      box-shadow: 0 0 40px rgba(0, 255, 0, 0.5);
+    }
+    .modal-header {
+      font-size: 16px;
+      margin-bottom: 16px;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .input-options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .input-option {
+      padding: 12px 16px;
+      background: #0a0a0a;
+      border: 2px solid #333;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+      font-size: 14px;
+    }
+    .input-option:hover {
+      border-color: #0f0;
+      background: #001a00;
+      box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+    }
+    .input-option.selected {
+      border-color: #0f0;
+      background: #001a00;
+      box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+    }
+    .rtsp-input {
+      display: none;
+      margin-top: 12px;
+    }
+    .rtsp-input.active {
+      display: block;
+    }
+    .rtsp-input input {
+      width: 100%;
+      padding: 8px;
+      background: #000;
+      border: 1px solid #0f0;
+      color: #0f0;
+      font-family: monospace;
+      font-size: 12px;
+      border-radius: 4px;
+      margin-top: 8px;
+    }
+    .rtsp-input label {
+      font-size: 11px;
+      color: #0f0;
+      opacity: 0.7;
+    }
+    .modal-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+    .modal-btn {
+      padding: 8px 16px;
+      background: #0a0a0a;
+      border: 1px solid #0f0;
+      color: #0f0;
+      font-family: monospace;
+      font-size: 12px;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+    .modal-btn:hover {
+      background: #001a00;
+      box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+    }
+    .modal-btn.primary {
+      background: #0f0;
+      color: #000;
+    }
+    .modal-btn.primary:hover {
+      box-shadow: 0 0 15px rgba(0, 255, 0, 0.7);
+    }
     .cable-settings {
       display: flex;
       gap: 20px;
@@ -201,6 +464,31 @@
           <div class="eject-btn">×</div>
         </div>
         <div class="port-status"></div>
+        <div class="pin-connector">
+          <div class="vga-pins">
+            <div class="vga-row">
+              <div class="pin red connected" data-pin="vga-red" data-label="1:Red"></div>
+              <div class="pin green connected" data-pin="vga-green" data-label="2:Green"></div>
+              <div class="pin blue connected" data-pin="vga-blue" data-label="3:Blue"></div>
+              <div class="pin connected" data-pin="vga-4" data-label="4:ID2"></div>
+              <div class="pin connected" data-pin="vga-5" data-label="5:GND"></div>
+            </div>
+            <div class="vga-row">
+              <div class="pin red connected" data-pin="vga-red-gnd" data-label="6:R-GND"></div>
+              <div class="pin green connected" data-pin="vga-green-gnd" data-label="7:G-GND"></div>
+              <div class="pin blue connected" data-pin="vga-blue-gnd" data-label="8:B-GND"></div>
+              <div class="pin connected" data-pin="vga-9" data-label="9:+5V"></div>
+              <div class="pin connected" data-pin="vga-10" data-label="10:GND"></div>
+            </div>
+            <div class="vga-row">
+              <div class="pin connected" data-pin="vga-11" data-label="11:ID0"></div>
+              <div class="pin connected" data-pin="vga-12" data-label="12:DDC"></div>
+              <div class="pin sync connected" data-pin="vga-hsync" data-label="13:HSync"></div>
+              <div class="pin sync connected" data-pin="vga-vsync" data-label="14:VSync"></div>
+              <div class="pin connected" data-pin="vga-15" data-label="15:DDC"></div>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="port">
         <div class="port-label">DVI INPUT</div>
@@ -210,6 +498,58 @@
           <div class="eject-btn">×</div>
         </div>
         <div class="port-status"></div>
+        <div class="pin-connector">
+          <div class="dvi-pins">
+            <div class="tmds-lane active" data-lane="tmds-clock">
+              <div class="tmds-indicator"></div>
+              <span>TMDS Clock</span>
+            </div>
+            <div class="tmds-lane active" data-lane="tmds-data0">
+              <div class="tmds-indicator"></div>
+              <span>TMDS Data 0 (Blue)</span>
+            </div>
+            <div class="tmds-lane active" data-lane="tmds-data1">
+              <div class="tmds-indicator"></div>
+              <span>TMDS Data 1 (Green)</span>
+            </div>
+            <div class="tmds-lane active" data-lane="tmds-data2">
+              <div class="tmds-indicator"></div>
+              <span>TMDS Data 2 (Red)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="port">
+        <div class="port-label">COMPONENT</div>
+        <div class="port-socket" data-port="component">
+          <div class="drop-hint">DROP</div>
+          <div class="input-info"></div>
+          <div class="eject-btn">×</div>
+        </div>
+        <div class="port-status"></div>
+        <div class="component-cables">
+          <div class="cable-plug y-cable" data-cable="y">
+            <div class="cable-indicator"></div>
+            <span>Y</span>
+            <div class="cable-quality">
+              <div class="cable-quality-fill" style="width: 100%"></div>
+            </div>
+          </div>
+          <div class="cable-plug pb-cable" data-cable="pb">
+            <div class="cable-indicator"></div>
+            <span>Pb</span>
+            <div class="cable-quality">
+              <div class="cable-quality-fill" style="width: 100%"></div>
+            </div>
+          </div>
+          <div class="cable-plug pr-cable" data-cable="pr">
+            <div class="cable-indicator"></div>
+            <span>Pr</span>
+            <div class="cable-quality">
+              <div class="cable-quality-fill" style="width: 100%"></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="cable-settings">
@@ -225,6 +565,34 @@
   </div>
 
   <input type="file" id="file-input" accept="image/*,video/*" style="display: none;">
+
+  <div class="modal" id="input-modal">
+    <div class="modal-content">
+      <div class="modal-header" id="modal-port-name"></div>
+      <div class="input-options">
+        <div class="input-option" data-input-type="file">
+          <div>📁 Select File</div>
+          <small style="opacity: 0.6; font-size: 10px;">Image or Video</small>
+        </div>
+        <div class="input-option" data-input-type="screen">
+          <div>🖥️ Screen Capture</div>
+          <small style="opacity: 0.6; font-size: 10px;">Record display</small>
+        </div>
+        <div class="input-option" data-input-type="rtsp">
+          <div>📡 HLS Stream</div>
+          <small style="opacity: 0.6; font-size: 10px;">Network video stream</small>
+        </div>
+      </div>
+      <div class="rtsp-input" id="rtsp-input">
+        <label>HLS Stream URL:</label>
+        <input type="text" id="rtsp-url" placeholder="https://example.com/stream.m3u8">
+      </div>
+      <div class="modal-buttons">
+        <button class="modal-btn" id="modal-cancel">Cancel</button>
+        <button class="modal-btn primary" id="modal-connect">Connect</button>
+      </div>
+    </div>
+  </div>
 
   <script>
     const canvas = document.getElementById('canvas');
@@ -249,10 +617,30 @@
     let cableQuality = 1.0;
     let cableLength = 6;
     let signalPresent = false;
+    let yCableConnected = true;
+    let pbCableConnected = true;
+    let prCableConnected = true;
+    let yCableQuality = 100;
+    let pbCableQuality = 100;
+    let prCableQuality = 100;
+    let vgaPinRed = true;
+    let vgaPinGreen = true;
+    let vgaPinBlue = true;
+    let vgaPinHsync = true;
+    let vgaPinVsync = true;
+    let vgaPinRedGnd = true;
+    let vgaPinGreenGnd = true;
+    let vgaPinBlueGnd = true;
+    let dviTmdsClock = true;
+    let dviTmdsData0 = true;
+    let dviTmdsData1 = true;
+    let dviTmdsData2 = true;
     let inputCanvas = document.createElement('canvas');
     let inputCtx = inputCanvas.getContext('2d');
     inputCanvas.width = 320;
     inputCanvas.height = 240;
+    let currentModalPort = null;
+    let selectedInputType = null;
 
     canvas.width = 320;
     canvas.height = 240;
@@ -331,6 +719,31 @@
       inputType = type;
       signalPresent = true;
 
+      if (port === 'component') {
+        yCableConnected = true;
+        pbCableConnected = true;
+        prCableConnected = true;
+        yCableQuality = 100;
+        pbCableQuality = 100;
+        prCableQuality = 100;
+      } else if (port === 'vga') {
+        vgaPinRed = true;
+        vgaPinGreen = true;
+        vgaPinBlue = true;
+        vgaPinHsync = true;
+        vgaPinVsync = true;
+        vgaPinRedGnd = true;
+        vgaPinGreenGnd = true;
+        vgaPinBlueGnd = true;
+        document.querySelectorAll('[data-port="vga"] .pin').forEach(p => p.classList.add('connected'));
+      } else if (port === 'dvi') {
+        dviTmdsClock = true;
+        dviTmdsData0 = true;
+        dviTmdsData1 = true;
+        dviTmdsData2 = true;
+        document.querySelectorAll('[data-port="dvi"] .tmds-lane').forEach(l => l.classList.add('active'));
+      }
+
       const socket = document.querySelector(`[data-port="${port}"]`);
       socket.classList.add('connected');
 
@@ -343,6 +756,12 @@
       } else if (type === 'video') {
         status.textContent = `${source.videoWidth}x${source.videoHeight}`;
         info.textContent = 'VID';
+      } else if (type === 'screen') {
+        status.textContent = 'SCREEN';
+        info.textContent = 'REC';
+      } else if (type === 'stream') {
+        status.textContent = 'STREAM';
+        info.textContent = 'NET';
       }
 
       if (wasmInstance) {
@@ -358,8 +777,15 @@
         socket.querySelector('.input-info').textContent = '';
       }
 
-      if (inputSource && inputType === 'video') {
+      if (inputSource && (inputType === 'video' || inputType === 'stream')) {
         inputSource.pause();
+        if (inputType === 'stream') {
+          inputSource.src = '';
+        }
+      }
+
+      if (inputSource && inputType === 'screen' && inputSource.srcObject) {
+        inputSource.srcObject.getTracks().forEach(track => track.stop());
       }
 
       inputSource = null;
@@ -370,6 +796,43 @@
       if (wasmInstance) {
         wasmInstance.exports.resetScanline();
       }
+    }
+
+    async function startScreenCapture(port) {
+      try {
+        const stream = await navigator.mediaDevices.getDisplayMedia({
+          video: { width: 1920, height: 1080 }
+        });
+        const video = document.createElement('video');
+        video.srcObject = stream;
+        video.muted = true;
+        video.onloadedmetadata = () => {
+          video.play();
+          connectInput(port, video, 'screen');
+        };
+      } catch (e) {
+        console.error('Screen capture failed:', e);
+      }
+    }
+
+    function connectRtspStream(port, url) {
+      const video = document.createElement('video');
+      video.crossOrigin = 'anonymous';
+      video.loop = false;
+      video.muted = true;
+      video.autoplay = true;
+      video.playsInline = true;
+
+      video.onloadedmetadata = () => {
+        video.play();
+        connectInput(port, video, 'stream');
+      };
+
+      video.onerror = (e) => {
+        console.error('Stream failed:', e);
+      };
+
+      video.src = url;
     }
 
     function handleFileDrop(port, file) {
@@ -391,18 +854,73 @@
       }
     }
 
+    const modal = document.getElementById('input-modal');
+    const modalPortName = document.getElementById('modal-port-name');
+    const modalCancel = document.getElementById('modal-cancel');
+    const modalConnect = document.getElementById('modal-connect');
+    const rtspInputDiv = document.getElementById('rtsp-input');
+    const rtspUrlInput = document.getElementById('rtsp-url');
+
+    document.querySelectorAll('.input-option').forEach(option => {
+      option.addEventListener('click', () => {
+        document.querySelectorAll('.input-option').forEach(o => o.classList.remove('selected'));
+        option.classList.add('selected');
+        selectedInputType = option.dataset.inputType;
+
+        if (selectedInputType === 'rtsp') {
+          rtspInputDiv.classList.add('active');
+        } else {
+          rtspInputDiv.classList.remove('active');
+        }
+      });
+    });
+
+    modalCancel.addEventListener('click', () => {
+      modal.classList.remove('active');
+      currentModalPort = null;
+      selectedInputType = null;
+      document.querySelectorAll('.input-option').forEach(o => o.classList.remove('selected'));
+      rtspInputDiv.classList.remove('active');
+      rtspUrlInput.value = '';
+    });
+
+    modalConnect.addEventListener('click', () => {
+      if (!selectedInputType || !currentModalPort) return;
+
+      modal.classList.remove('active');
+
+      if (selectedInputType === 'file') {
+        const fileInput = document.getElementById('file-input');
+        fileInput.onchange = (e) => {
+          if (e.target.files[0]) {
+            handleFileDrop(currentModalPort, e.target.files[0]);
+          }
+        };
+        fileInput.click();
+      } else if (selectedInputType === 'screen') {
+        startScreenCapture(currentModalPort);
+      } else if (selectedInputType === 'rtsp') {
+        const url = rtspUrlInput.value.trim();
+        if (url) {
+          connectRtspStream(currentModalPort, url);
+        }
+      }
+
+      currentModalPort = null;
+      selectedInputType = null;
+      document.querySelectorAll('.input-option').forEach(o => o.classList.remove('selected'));
+      rtspInputDiv.classList.remove('active');
+      rtspUrlInput.value = '';
+    });
+
     document.querySelectorAll('.port-socket').forEach(socket => {
       const port = socket.dataset.port;
 
       socket.addEventListener('click', () => {
         if (socket.classList.contains('connected')) return;
-        const fileInput = document.getElementById('file-input');
-        fileInput.onchange = (e) => {
-          if (e.target.files[0]) {
-            handleFileDrop(port, e.target.files[0]);
-          }
-        };
-        fileInput.click();
+        currentModalPort = port;
+        modalPortName.textContent = `${port.toUpperCase()} Input`;
+        modal.classList.add('active');
       });
 
       socket.addEventListener('dragover', (e) => {
@@ -427,6 +945,78 @@
       ejectBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         disconnectInput();
+      });
+    });
+
+    document.querySelectorAll('.cable-plug').forEach(plug => {
+      const cable = plug.dataset.cable;
+      plug.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (cable === 'y') {
+          yCableConnected = !yCableConnected;
+          plug.classList.toggle('disconnected', !yCableConnected);
+          if (!yCableConnected) {
+            yCableQuality = 0;
+          } else {
+            yCableQuality = 100;
+          }
+        } else if (cable === 'pb') {
+          pbCableConnected = !pbCableConnected;
+          plug.classList.toggle('disconnected', !pbCableConnected);
+          if (!pbCableConnected) {
+            pbCableQuality = 0;
+          } else {
+            pbCableQuality = 100;
+          }
+        } else if (cable === 'pr') {
+          prCableConnected = !prCableConnected;
+          plug.classList.toggle('disconnected', !prCableConnected);
+          if (!prCableConnected) {
+            prCableQuality = 0;
+          } else {
+            prCableQuality = 100;
+          }
+        }
+        const qualityFill = plug.querySelector('.cable-quality-fill');
+        if (qualityFill) {
+          qualityFill.style.width = (cable === 'y' ? yCableQuality : cable === 'pb' ? pbCableQuality : prCableQuality) + '%';
+        }
+      });
+    });
+
+    document.querySelectorAll('.pin').forEach(pin => {
+      const pinType = pin.dataset.pin;
+      pin.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const wasConnected = pin.classList.contains('connected');
+        pin.classList.toggle('connected');
+
+        switch(pinType) {
+          case 'vga-red': vgaPinRed = !wasConnected; break;
+          case 'vga-green': vgaPinGreen = !wasConnected; break;
+          case 'vga-blue': vgaPinBlue = !wasConnected; break;
+          case 'vga-hsync': vgaPinHsync = !wasConnected; break;
+          case 'vga-vsync': vgaPinVsync = !wasConnected; break;
+          case 'vga-red-gnd': vgaPinRedGnd = !wasConnected; break;
+          case 'vga-green-gnd': vgaPinGreenGnd = !wasConnected; break;
+          case 'vga-blue-gnd': vgaPinBlueGnd = !wasConnected; break;
+        }
+      });
+    });
+
+    document.querySelectorAll('.tmds-lane').forEach(lane => {
+      const laneType = lane.dataset.lane;
+      lane.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const wasActive = lane.classList.contains('active');
+        lane.classList.toggle('active');
+
+        switch(laneType) {
+          case 'tmds-clock': dviTmdsClock = !wasActive; break;
+          case 'tmds-data0': dviTmdsData0 = !wasActive; break;
+          case 'tmds-data1': dviTmdsData1 = !wasActive; break;
+          case 'tmds-data2': dviTmdsData2 = !wasActive; break;
+        }
       });
     });
 
@@ -491,8 +1081,27 @@
         getActivePort: () => {
           if (activePort === 'vga') return 1;
           if (activePort === 'dvi') return 2;
+          if (activePort === 'component') return 3;
           return 0;
-        }
+        },
+        getYCableConnected: () => yCableConnected ? 1 : 0,
+        getPbCableConnected: () => pbCableConnected ? 1 : 0,
+        getPrCableConnected: () => prCableConnected ? 1 : 0,
+        getYCableQuality: () => yCableQuality,
+        getPbCableQuality: () => pbCableQuality,
+        getPrCableQuality: () => prCableQuality,
+        getVgaPinRed: () => vgaPinRed ? 1 : 0,
+        getVgaPinGreen: () => vgaPinGreen ? 1 : 0,
+        getVgaPinBlue: () => vgaPinBlue ? 1 : 0,
+        getVgaPinHsync: () => vgaPinHsync ? 1 : 0,
+        getVgaPinVsync: () => vgaPinVsync ? 1 : 0,
+        getVgaPinRedGnd: () => vgaPinRedGnd ? 1 : 0,
+        getVgaPinGreenGnd: () => vgaPinGreenGnd ? 1 : 0,
+        getVgaPinBlueGnd: () => vgaPinBlueGnd ? 1 : 0,
+        getDviTmdsClock: () => dviTmdsClock ? 1 : 0,
+        getDviTmdsData0: () => dviTmdsData0 ? 1 : 0,
+        getDviTmdsData1: () => dviTmdsData1 ? 1 : 0,
+        getDviTmdsData2: () => dviTmdsData2 ? 1 : 0
       }
     };
 
